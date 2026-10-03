@@ -1,0 +1,1927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI StudyMate - Personalized AI Tutoring & Adaptive Learning</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --secondary: #ec4899;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --error: #ef4444;
+      --dark: #1f2937;
+      --dark-lighter: #374151;
+      --gray: #6b7280;
+      --gray-light: #e5e7eb;
+      --gray-lighter: #f3f4f6;
+      --white: #ffffff;
+      --bg: #f9fafb;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--dark);
+      background: var(--white);
+      overflow-x: hidden;
+    }
+
+    /* Header & Navigation */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-light);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-menu a {
+      text-decoration: none;
+      color: var(--dark);
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .nav-menu a:hover {
+      color: var(--primary);
+    }
+
+    .cta-btn {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 0.4rem;
+      cursor: pointer;
+    }
+
+    .hamburger span {
+      width: 1.5rem;
+      height: 0.25rem;
+      background: var(--dark);
+      border-radius: 0.125rem;
+      transition: all 0.3s;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--primary) 0%, #6366f1 50%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 6rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -10%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .hero .subtitle {
+      font-size: 1.25rem;
+      margin-bottom: 2rem;
+      opacity: 0.95;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--white);
+      color: var(--primary);
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1rem;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--white);
+      padding: 1rem 2rem;
+      border: 2px solid var(--white);
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1rem;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-secondary:hover {
+      background: var(--white);
+      color: var(--primary);
+      transform: translateY(-3px);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Sections */
+    section {
+      padding: 5rem 1.5rem;
+    }
+
+    section.alt {
+      background: var(--bg);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-header h2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      color: var(--dark);
+    }
+
+    .section-header p {
+      font-size: 1.1rem;
+      color: var(--gray);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Problem Section */
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 4rem;
+    }
+
+    .problem-card {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: 0.75rem;
+      border-left: 4px solid var(--error);
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+    }
+
+    .problem-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .problem-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      color: var(--dark);
+    }
+
+    .problem-card p {
+      color: var(--gray);
+      line-height: 1.8;
+    }
+
+    /* Solution Section */
+    .solution-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .solution-text h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+    }
+
+    .solution-text p {
+      font-size: 1.05rem;
+      color: var(--gray);
+      margin-bottom: 1.5rem;
+      line-height: 1.8;
+    }
+
+    .solution-features {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .feature-item {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .feature-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-weight: 700;
+      flex-shrink: 0;
+      font-size: 1.25rem;
+    }
+
+    .feature-item strong {
+      color: var(--dark);
+      display: block;
+      font-size: 1.05rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .feature-item span {
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    /* How It Works */
+    .how-it-works-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .step-card {
+      background: var(--white);
+      padding: 2.5rem 2rem;
+      border-radius: 0.75rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      position: relative;
+      border-top: 4px solid var(--primary);
+      transition: all 0.3s;
+    }
+
+    .step-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .step-number {
+      display: inline-flex;
+      width: 3.5rem;
+      height: 3.5rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--white);
+      border-radius: 50%;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .step-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      color: var(--dark);
+    }
+
+    .step-card p {
+      color: var(--gray);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* AI Tutor Section */
+    .ai-tutor-demo {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+      margin-top: 3rem;
+    }
+
+    .tutor-chat {
+      background: var(--white);
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      border: 1px solid var(--gray-light);
+    }
+
+    .chat-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 1.5rem;
+      font-weight: 600;
+    }
+
+    .chat-messages {
+      padding: 1.5rem;
+      height: 300px;
+      overflow-y: auto;
+      background: var(--white);
+    }
+
+    .message {
+      margin-bottom: 1.5rem;
+      display: flex;
+      gap: 1rem;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message.student {
+      justify-content: flex-end;
+    }
+
+    .message.ai {
+      justify-content: flex-start;
+    }
+
+    .message-content {
+      max-width: 70%;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      word-wrap: break-word;
+    }
+
+    .message.student .message-content {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--white);
+    }
+
+    .message.ai .message-content {
+      background: var(--gray-lighter);
+      color: var(--dark);
+    }
+
+    .sources {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .source-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--bg);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--gray);
+      border-left: 3px solid var(--success);
+    }
+
+    .source-badge strong {
+      color: var(--dark);
+    }
+
+    .tutor-benefits {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .benefit-item {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .benefit-icon {
+      flex-shrink: 0;
+      width: 2rem;
+      height: 2rem;
+      background: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-size: 1rem;
+    }
+
+    .benefit-item h4 {
+      color: var(--dark);
+      margin-bottom: 0.25rem;
+    }
+
+    .benefit-item p {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    /* Multimodal Knowledge Base */
+    .knowledge-base-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .resource-card {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: 0.75rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      border: 2px solid var(--gray-light);
+      transition: all 0.3s;
+    }
+
+    .resource-card:hover {
+      border-color: var(--primary);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-3px);
+    }
+
+    .resource-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .resource-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--dark);
+    }
+
+    .resource-card p {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    /* Adaptive Assessments */
+    .assessment-types {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 3rem;
+    }
+
+    .assessment-card {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      padding: 2.5rem;
+      border-radius: 0.75rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      transition: all 0.3s;
+    }
+
+    .assessment-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .assessment-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .assessment-card p {
+      font-size: 0.9rem;
+      opacity: 0.95;
+    }
+
+    /* Dashboard Section */
+    .dashboard-showcase {
+      background: var(--white);
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow-lg);
+      padding: 2rem;
+      margin-top: 3rem;
+      border: 1px solid var(--gray-light);
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid var(--gray-light);
+      padding-bottom: 1.5rem;
+    }
+
+    .dashboard-header h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .dashboard-tabs {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .dashboard-tab {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      color: var(--gray);
+      font-weight: 600;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s;
+    }
+
+    .dashboard-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .dashboard-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+    }
+
+    .metric-card {
+      background: var(--bg);
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid var(--primary);
+    }
+
+    .metric-label {
+      color: var(--gray);
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-detail {
+      font-size: 0.85rem;
+      color: var(--gray);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 0.5rem;
+      background: var(--gray-light);
+      border-radius: 0.25rem;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 0.25rem;
+    }
+
+    /* Testimonials */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .testimonial-card {
+      background: var(--white);
+      padding: 2rem;
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-light);
+    }
+
+    .stars {
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .testimonial-text {
+      color: var(--gray);
+      margin-bottom: 1.5rem;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    .testimonial-author {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .author-avatar {
+      width: 3rem;
+      height: 3rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .author-info h4 {
+      color: var(--dark);
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .author-info p {
+      color: var(--gray);
+      font-size: 0.85rem;
+    }
+
+    /* FAQ Section */
+    .faq-list {
+      max-width: 700px;
+      margin: 3rem auto 0;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid var(--gray-light);
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+    }
+
+    .faq-question {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--dark);
+      transition: color 0.3s;
+    }
+
+    .faq-question:hover {
+      color: var(--primary);
+    }
+
+    .faq-toggle {
+      width: 1.5rem;
+      height: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--primary);
+      transition: transform 0.3s;
+    }
+
+    .faq-toggle.open {
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      display: none;
+      color: var(--gray);
+      margin-top: 1rem;
+      line-height: 1.6;
+    }
+
+    .faq-answer.open {
+      display: block;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Form Section */
+    .form-section {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+    }
+
+    .form-container {
+      max-width: 500px;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: 0.75rem;
+      padding: 3rem;
+      box-shadow: var(--shadow-lg);
+      color: var(--dark);
+    }
+
+    .form-title {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-align: center;
+      color: var(--dark);
+    }
+
+    .form-subtitle {
+      text-align: center;
+      color: var(--gray);
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: var(--dark);
+      font-size: 0.95rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.875rem;
+      border: 2px solid var(--gray-light);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    .form-group input.error {
+      border-color: var(--error);
+    }
+
+    .form-error {
+      color: var(--error);
+      font-size: 0.8rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+
+    .form-error.show {
+      display: block;
+    }
+
+    .form-submit {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: var(--white);
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 1rem;
+    }
+
+    .form-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .form-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .form-message {
+      text-align: center;
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      display: none;
+      font-weight: 500;
+    }
+
+    .form-message.success {
+      background: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+      display: block;
+      border-left: 4px solid var(--success);
+    }
+
+    .form-message.error {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--error);
+      display: block;
+      border-left: 4px solid var(--error);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--dark);
+      color: var(--white);
+      padding: 4rem 1.5rem 2rem;
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .footer-section h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-section a {
+      color: rgba(255, 255, 255, 0.7);
+      text-decoration: none;
+      transition: color 0.3s;
+      font-size: 0.9rem;
+    }
+
+    .footer-section a:hover {
+      color: var(--white);
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      padding-top: 2rem;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .nav-menu {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .hero h1 {
+        font-size: 2rem;
+      }
+
+      .hero .subtitle {
+        font-size: 1rem;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn-primary, .btn-secondary {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .section-header h2 {
+        font-size: 1.75rem;
+      }
+
+      .solution-content,
+      .ai-tutor-demo {
+        grid-template-columns: 1fr;
+      }
+
+      .tutor-chat {
+        max-height: 400px;
+      }
+
+      .form-container {
+        padding: 2rem;
+      }
+
+      section {
+        padding: 3rem 1.5rem;
+      }
+
+      .hero {
+        padding: 3rem 1.5rem;
+      }
+
+      .hero::before {
+        width: 400px;
+        height: 400px;
+        right: -20%;
+      }
+
+      .step-card, .resource-card, .problem-card {
+        padding: 1.5rem;
+      }
+
+      .dashboard-content {
+        grid-template-columns: 1fr;
+      }
+
+      .faq-list {
+        max-width: 100%;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 1.5rem;
+      }
+
+      .hero .subtitle {
+        font-size: 0.95rem;
+      }
+
+      .section-header h2 {
+        font-size: 1.5rem;
+      }
+
+      .section-header p {
+        font-size: 0.95rem;
+      }
+
+      .cta-btn {
+        padding: 0.625rem 1rem;
+        font-size: 0.9rem;
+      }
+
+      .btn-primary, .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+      }
+
+      section {
+        padding: 2rem 1rem;
+      }
+
+      .hero {
+        padding: 2rem 1rem;
+      }
+
+      .container {
+        padding: 0 1rem;
+      }
+
+      .problem-grid,
+      .knowledge-base-showcase,
+      .assessment-types {
+        grid-template-columns: 1fr;
+      }
+
+      .form-container {
+        padding: 1.5rem;
+      }
+
+      .testimonial-card {
+        padding: 1.5rem;
+      }
+
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <div class="logo">🎓 AI StudyMate</div>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#pricing">Impact</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </nav>
+      <button class="cta-btn" onclick="document.getElementById('form-section').scrollIntoView({behavior: 'smooth'})">Get Started</button>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Your Personalized AI Tutor Awaits</h1>
+      <p class="subtitle">Upload your textbooks, slides, and notes. Get source-grounded tutoring, adaptive assessments, and personalized learning paths.</p>
+      <div class="hero-buttons">
+        <button class="btn-primary" onclick="document.getElementById('form-section').scrollIntoView({behavior: 'smooth'})">Try AI StudyMate</button>
+        <button class="btn-secondary" onclick="document.getElementById('how-it-works').scrollIntoView({behavior: 'smooth'})">Learn More</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Section -->
+  <section class="container">
+    <div class="section-header">
+      <h2>The Learning Challenge</h2>
+      <p>Students struggle with scattered resources, passive learning, and generic feedback</p>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <h3>📚 Scattered Resources</h3>
+        <p>Textbooks, PDFs, slides, and videos scattered across different platforms make it hard to study efficiently.</p>
+      </div>
+      <div class="problem-card">
+        <h3>❓ Generic Tutoring</h3>
+        <p>Standard tutoring doesn't adapt to your learning pace, mistakes, or weak topics.</p>
+      </div>
+      <div class="problem-card">
+        <h3>📊 No Progress Tracking</h3>
+        <p>Without clear feedback and progress tracking, it's impossible to know what to focus on next.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution Section -->
+  <section class="container alt" style="background: var(--bg); padding: 5rem 1.5rem;">
+    <div class="section-header">
+      <h2>The AI StudyMate Solution</h2>
+      <p>A unified platform that understands your learning and adapts to your needs</p>
+    </div>
+    <div class="solution-content">
+      <div class="solution-text">
+        <h3>Personalized Learning, Powered by AI</h3>
+        <p>AI StudyMate doesn't just answer questions. It learns from your study material and adapts the entire learning experience around you.</p>
+        <div class="solution-features">
+          <div class="feature-item">
+            <div class="feature-icon">✓</div>
+            <div>
+              <strong>Multimodal Knowledge Base</strong>
+              <span>Integrate textbooks, PDFs, slides, notes, and videos</span>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">✓</div>
+            <div>
+              <strong>Source-Grounded Answers</strong>
+              <span>Get citations to your actual study material</span>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">✓</div>
+            <div>
+              <strong>Adaptive Assessments</strong>
+              <span>Generate personalized quizzes and exams</span>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">✓</div>
+            <div>
+              <strong>Weak Topic Detection</strong>
+              <span>Identify areas needing more practice automatically</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; justify-content: center; align-items: center;">
+        <div style="background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); width: 100%; padding: 3rem; border-radius: 0.75rem; color: white; text-align: center;">
+          <div style="font-size: 4rem; margin-bottom: 1rem;">🚀</div>
+          <h3 style="margin-bottom: 1rem;">Ready to Transform Your Learning?</h3>
+          <p>Join students who are already experiencing personalized, adaptive learning.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="container" id="how-it-works">
+    <div class="section-header">
+      <h2>How AI StudyMate Works</h2>
+      <p>8 simple steps to personalized learning success</p>
+    </div>
+    <div class="how-it-works-grid">
+      <div class="step-card">
+        <div class="step-number">1</div>
+        <h3>Upload Material</h3>
+        <p>Add your textbooks, PDFs, slides, and notes to your personal knowledge base.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">2</div>
+        <h3>Build Knowledge Base</h3>
+        <p>AI connects and processes all your learning materials into a unified knowledge base.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">3</div>
+        <h3>Ask Questions</h3>
+        <p>Ask your AI tutor any question related to your uploaded materials.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">4</div>
+        <h3>Get Grounded Answers</h3>
+        <p>Receive answers with exact citations to textbook pages, slides, or timestamps.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">5</div>
+        <h3>Take Assessments</h3>
+        <p>Complete adaptive quizzes tailored to your level and learning progress.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">6</div>
+        <h3>Identify Weak Areas</h3>
+        <p>The system analyzes your performance to identify topics needing more practice.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">7</div>
+        <h3>Get Personalized Feedback</h3>
+        <p>Receive explanations and guidance specific to your mistakes and learning gaps.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">8</div>
+        <h3>Track Progress</h3>
+        <p>Monitor your improvement across topics, assessments, and your overall learning journey.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Tutor Section -->
+  <section class="container alt" style="background: var(--bg); padding: 5rem 1.5rem;">
+    <div class="section-header">
+      <h2>Your AI Tutor in Action</h2>
+      <p>Smart, source-grounded tutoring powered by your study materials</p>
+    </div>
+    <div class="ai-tutor-demo">
+      <div class="tutor-chat">
+        <div class="chat-header">AI StudyMate Tutor</div>
+        <div class="chat-messages">
+          <div class="message student">
+            <div class="message-content">Explain this topic in simple terms.</div>
+          </div>
+          <div class="message ai">
+            <div class="message-content">
+              <strong>Network Theorems</strong> are fundamental principles that simplify circuit analysis. They help us understand how current and voltage behave in complex electrical systems...
+              <div class="sources">
+                <div class="source-badge">📖 <strong>Textbook</strong> — Page 42</div>
+                <div class="source-badge">📊 <strong>Slides</strong> — Slide 16</div>
+                <div class="source-badge">🎥 <strong>Video</strong> — 08:32</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tutor-benefits">
+        <h3 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--dark);">Source-Grounded Tutoring</h3>
+        <div class="benefit-item">
+          <div class="benefit-icon">📖</div>
+          <div>
+            <h4>Exact Citations</h4>
+            <p>Every answer references your actual study materials with page numbers and timestamps.</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">🎯</div>
+          <div>
+            <h4>Contextual Learning</h4>
+            <p>Learn concepts in the context of your textbook and lectures, not generic explanations.</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">✨</div>
+          <div>
+            <h4>Natural Conversation</h4>
+            <p>Ask follow-up questions and dig deeper into topics with conversational AI tutoring.</p>
+          </div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">🔄</div>
+          <div>
+            <h4>Continuous Learning</h4>
+            <p>The system remembers your questions and learns your unique learning style over time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Multimodal Knowledge Base -->
+  <section class="container">
+    <div class="section-header">
+      <h2>Multimodal Knowledge Base</h2>
+      <p>Bring your learning materials together in one unified system</p>
+    </div>
+    <div class="knowledge-base-showcase">
+      <div class="resource-card">
+        <div class="resource-icon">📖</div>
+        <h3>Textbooks</h3>
+        <p>Upload PDF textbooks and get page-level references in answers.</p>
+      </div>
+      <div class="resource-card">
+        <div class="resource-icon">📄</div>
+        <h3>Documents & PDFs</h3>
+        <p>Add lecture notes, research papers, and study guides.</p>
+      </div>
+      <div class="resource-card">
+        <div class="resource-icon">📊</div>
+        <h3>Slides & Presentations</h3>
+        <p>Include presentation slides with automatic slide indexing.</p>
+      </div>
+      <div class="resource-card">
+        <div class="resource-icon">🎥</div>
+        <h3>Lecture Videos</h3>
+        <p>Add video lectures with timestamp-based references.</p>
+      </div>
+      <div class="resource-card">
+        <div class="resource-icon">📝</div>
+        <h3>Personal Notes</h3>
+        <p>Include your own study notes and annotations.</p>
+      </div>
+      <div class="resource-card">
+        <div class="resource-icon">🔗</div>
+        <h3>Multiple Formats</h3>
+        <p>Support for any learning material format you need.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Adaptive Assessments -->
+  <section class="container alt" style="background: var(--bg); padding: 5rem 1.5rem;">
+    <div class="section-header">
+      <h2>Adaptive Assessments</h2>
+      <p>Quizzes that adapt to your learning level and progress</p>
+    </div>
+    <div class="assessment-types">
+      <div class="assessment-card">
+        <h3>MCQs</h3>
+        <p>Multiple choice questions adapted to your difficulty level and topic mastery.</p>
+      </div>
+      <div class="assessment-card">
+        <h3>Short Answer</h3>
+        <p>Open-ended questions that evaluate your understanding deeply.</p>
+      </div>
+      <div class="assessment-card">
+        <h3>Numerical Problems</h3>
+        <p>Math and science problems with graded solutions.</p>
+      </div>
+      <div class="assessment-card">
+        <h3>Mock Exams</h3>
+        <p>Full-length tests that simulate real exam conditions and scoring.</p>
+      </div>
+      <div class="assessment-card">
+        <h3>Topic-Based</h3>
+        <p>Focused assessments on specific weak topics you need to practice.</p>
+      </div>
+      <div class="assessment-card">
+        <h3>Difficulty-Adjusted</h3>
+        <p>Questions automatically adjust difficulty based on your performance.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Learning Progress Dashboard -->
+  <section class="container">
+    <div class="section-header">
+      <h2>Learning Progress Dashboard</h2>
+      <p>Track your growth across all topics and assessments</p>
+    </div>
+    <div class="dashboard-showcase">
+      <div class="dashboard-header">
+        <h3>Your Learning Analytics</h3>
+        <div class="dashboard-tabs">
+          <button class="dashboard-tab active">Topics</button>
+          <button class="dashboard-tab">Assessments</button>
+          <button class="dashboard-tab">Progress</button>
+        </div>
+      </div>
+      <div class="dashboard-content">
+        <div class="metric-card">
+          <div class="metric-label">📚 Concept Understanding</div>
+          <div class="metric-value">82%</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 82%;"></div>
+          </div>
+          <div class="metric-detail">Improving consistently</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">🎯 Problem Solving</div>
+          <div class="metric-value">64%</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 64%;"></div>
+          </div>
+          <div class="metric-detail">Needs more practice</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">⚡ Formula Application</div>
+          <div class="metric-value">48%</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: 48%;"></div>
+          </div>
+          <div class="metric-detail">Weak area - focus here</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">✅ Assessments Completed</div>
+          <div class="metric-value">24</div>
+          <div class="metric-detail">Average score: 76%</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">📈 Learning Streak</div>
+          <div class="metric-value">12 days</div>
+          <div class="metric-detail">Keep it up!</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">🎓 Topics Mastered</div>
+          <div class="metric-value">8/15</div>
+          <div class="metric-detail">53% complete</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Weak Topic Detection -->
+  <section class="container alt" style="background: var(--bg); padding: 5rem 1.5rem;">
+    <div class="section-header">
+      <h2>Weak Topic Detection</h2>
+      <p>AI identifies areas where you need more practice automatically</p>
+    </div>
+    <div class="solution-content">
+      <div>
+        <div style="background: var(--white); padding: 2rem; border-radius: 0.75rem; box-shadow: var(--shadow); border-left: 4px solid var(--error);">
+          <h3 style="color: var(--dark); margin-bottom: 1rem;">Topics Needing Practice</h3>
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid var(--gray-light);">
+              <span style="font-weight: 600; color: var(--dark);">Network Theorems</span>
+              <span style="color: var(--error); font-weight: 700;">35% accuracy</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid var(--gray-light);">
+              <span style="font-weight: 600; color: var(--dark);">Laplace Transforms</span>
+              <span style="color: var(--warning); font-weight: 700;">52% accuracy</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-weight: 600; color: var(--dark);">Signal Processing</span>
+              <span style="color: var(--warning); font-weight: 700;">61% accuracy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem; color: var(--dark);">Smart Learning Paths</h3>
+        <p style="color: var(--gray); margin-bottom: 1.5rem; line-height: 1.8;">AI StudyMate analyzes your assessment performance, quiz mistakes, and learning patterns to identify exactly which topics you struggle with.</p>
+        <div class="solution-features">
+          <div class="feature-item">
+            <div class="feature-icon">📊</div>
+            <div>
+              <strong>Pattern Recognition</strong>
+              <span>Detect recurring mistakes and knowledge gaps automatically</span>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🎯</div>
+            <div>
+              <strong>Targeted Practice</strong>
+              <span>Get personalized practice problems for weak areas</span>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🚀</div>
+            <div>
+              <strong>Smart Recommendations</strong>
+              <span>Receive guidance on what to study next for maximum growth</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Personalized Learner Model -->
+  <section class="container">
+    <div class="section-header">
+      <h2>Personalized Learner Model</h2>
+      <p>AI that understands your unique learning style and pace</p>
+    </div>
+    <div class="how-it-works-grid">
+      <div class="step-card">
+        <div class="step-number">🧠</div>
+        <h3>Learning Profile</h3>
+        <p>AI builds a comprehensive understanding of how you learn best, your strengths, and areas for improvement.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">⚙️</div>
+        <h3>Adaptive Content</h3>
+        <p>Content, difficulty, and teaching style adapt to match your unique learning preferences.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">🎯</div>
+        <h3>Personalized Pace</h3>
+        <p>Move at your own speed. The system adjusts recommendations based on how fast or slow you progress.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-number">📈</div>
+        <h3>Continuous Improvement</h3>
+        <p>Your learner model evolves with every question, quiz, and interaction to become more accurate and personalized.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="container alt" style="background: var(--bg); padding: 5rem 1.5rem;">
+    <div class="section-header">
+      <h2>Student Feedback</h2>
+      <p>What students are saying about AI StudyMate</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"AI StudyMate helped me focus on exactly what I needed to study. The weak topic detection saved me hours of wasted time."</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">A</div>
+          <div class="author-info">
+            <h4>Aisha Khan</h4>
+            <p>Computer Science Student</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"Having all my study materials connected in one place made studying so much more efficient. The AI tutor answers are actually grounded in my textbook!"</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">R</div>
+          <div class="author-info">
+            <h4>Rahul Patel</h4>
+            <p>Engineering Student</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p class="testimonial-text">"The adaptive assessments actually match my level. I'm not wasting time on questions too easy or too hard. My scores improved by 20 points!"</p>
+        <div class="testimonial-author">
+          <div class="author-avatar">S</div>
+          <div class="author-info">
+            <h4>Sophie Martin</h4>
+            <p>Medical Student</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="container">
+    <div class="section-header">
+      <h2>Frequently Asked Questions</h2>
+      <p>Find answers to common questions about AI StudyMate</p>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>What is AI StudyMate?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">AI StudyMate is an AI-powered personalized tutoring and adaptive learning platform that uses your study materials to provide grounded tutoring, assessments, feedback, and progress tracking. It learns from your performance and adapts the learning experience around your unique needs.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>What study materials can I upload?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">You can upload a variety of materials including PDF textbooks, lecture notes, presentation slides, lecture videos, research papers, and any other learning materials. The platform supports multiple formats to ensure you can use all your existing study resources.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>How does source citation work?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">AI StudyMate connects every answer to relevant sources from your uploaded materials. It can reference exact textbook pages, presentation slides, lecture video timestamps, and sections of your notes. This ensures you know exactly where information comes from.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>What happens if the answer isn't in my material?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">If a question can't be answered from your uploaded materials, AI StudyMate identifies it as an unsupported question rather than providing information without proper sources. This ensures you only get answers grounded in your actual study material.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>How are adaptive quizzes generated?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">Questions are generated based on multiple factors: the topics you're studying, your current difficulty level, the question type you need (MCQ, short answer, numerical), and signals from your previous performance. This ensures quizzes match your learning level exactly.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>Can AI StudyMate identify weak topics?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">Yes! The system analyzes your assessment performance, quiz results, and answer patterns to identify topics where you consistently struggle or make mistakes. It then recommends targeted practice in these areas to help you improve.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>Can I use materials from different subjects together?</span>
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">Yes! You can upload materials from different subjects and the AI tutor will work across all of them. This is particularly useful for integrated courses or when you're studying multiple subjects simultaneously.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form Section -->
+  <section class="form-section" id="form-section">
+    <div class="container">
+      <div class="form-container">
+        <h2 class="form-title">Try AI StudyMate Today</h2>
+        <p class="form-subtitle">Join students experiencing personalized, adaptive learning</p>
+        <form id="studymate-form" onsubmit="handleFormSubmit(event)">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+            <div class="form-error" id="name-error"></div>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            <div class="form-error" id="email-error"></div>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+            <div class="form-error" id="phone-error"></div>
+          </div>
+          <button type="submit" class="form-submit" id="submit-btn">Get Started</button>
+          <div class="form-message" id="form-message"></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="container" style="text-align: center; padding: 4rem 1.5rem; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); border-radius: 1rem; color: var(--white);">
+    <h2 style="font-size: 2rem; font-weight: 800; margin-bottom: 1rem;">Ready to Transform Your Learning?</h2>
+    <p style="font-size: 1.1rem; margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">Start with AI StudyMate and experience personalized, adaptive learning that actually works.</p>
+    <button class="btn-primary" onclick="document.getElementById('form-section').scrollIntoView({behavior: 'smooth'})" style="background: var(--white); color: var(--primary);">Start Learning Now</button>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>AI StudyMate</h3>
+        <p style="color: rgba(255, 255, 255, 0.7); margin-bottom: 1rem;">Personalized AI tutoring and adaptive learning platform for Track D: Personalized Tutoring & Adaptive Learning.</p>
+      </div>
+      <div class="footer-section">
+        <h3>Product</h3>
+        <ul>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#pricing">Impact</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>About</h3>
+        <ul>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Research</a></li>
+          <li><a href="#">Contact</a></li>
+          <li><a href="#">Support</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h3>Legal</h3>
+        <ul>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2024 AI StudyMate. All rights reserved. | Hackathon Project - Track D: Personalized Tutoring & Adaptive Learning</p>
+    </div>
+  </footer>
+
+  <script>
+    // Google Apps Script URL
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYQkPlQb9FZDIWebkK-5nOvD6xBxgKekyqxzYjV3D-BpqzQaqhEGc_K_ZCqIf-YmBm/exec";
+
+    // Form validation
+    function validateForm() {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      let isValid = true;
+
+      // Reset error messages
+      document.getElementById('name-error').textContent = '';
+      document.getElementById('email-error').textContent = '';
+      document.getElementById('phone-error').textContent = '';
+      document.getElementById('name-error').classList.remove('show');
+      document.getElementById('email-error').classList.remove('show');
+      document.getElementById('phone-error').classList.remove('show');
+
+      // Validate name
+      if (!name) {
+        document.getElementById('name-error').textContent = 'Name is required';
+        document.getElementById('name-error').classList.add('show');
+        document.getElementById('name').classList.add('error');
+        isValid = false;
+      } else {
+        document.getElementById('name').classList.remove('error');
+      }
+
+      // Validate email
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email) {
+        document.getElementById('email-error').textContent = 'Email is required';
+        document.getElementById('email-error').classList.add('show');
+        document.getElementById('email').classList.add('error');
+        isValid = false;
+      } else if (!emailRegex.test(email)) {
+        document.getElementById('email-error').textContent = 'Please enter a valid email';
+        document.getElementById('email-error').classList.add('show');
+        document.getElementById('email').classList.add('error');
+        isValid = false;
+      } else {
+        document.getElementById('email').classList.remove('error');
+      }
+
+      // Validate phone
+      if (!phone) {
+        document.getElementById('phone-error').textContent = 'Phone number is required';
+        document.getElementById('phone-error').classList.add('show');
+        document.getElementById('phone').classList.add('error');
+        isValid = false;
+      } else if (phone.length < 10) {
+        document.getElementById('phone-error').textContent = 'Please enter a valid phone number';
+        document.getElementById('phone-error').classList.add('show');
+        document.getElementById('phone').classList.add('error');
+        isValid = false;
+      } else {
+        document.getElementById('phone').classList.remove('error');
+      }
+
+      return isValid;
+    }
+
+    // Handle form submission
+    function handleFormSubmit(event) {
+      event.preventDefault();
+
+      if (!validateForm()) {
+        showFormMessage('Please fix the errors above', 'error');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submit-btn');
+      const messageDiv = document.getElementById('form-message');
+
+      // Disable button and show loading state
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+      messageDiv.classList.remove('success', 'error');
+      messageDiv.textContent = '';
+
+      // Get form values
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      // Build URL with query parameters
+      const url = SCRIPT_URL + "?" + new URLSearchParams({
+        name: name,
+        email: email,
+        phone: phone
+      });
+
+      // Send data to Apps Script
+      fetch(url, {
+        method: "GET",
+        mode: "no-cors"
+      })
+      .then(() => {
+        showFormMessage("You're all set! Your details have been submitted.", 'success');
+        document.getElementById('studymate-form').reset();
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Get Started';
+      })
+      .catch(() => {
+        showFormMessage('Something went wrong. Please try again.', 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Get Started';
+      });
+    }
+
+    // Show form message
+    function showFormMessage(message, type) {
+      const messageDiv = document.getElementById('form-message');
+      messageDiv.textContent = message;
+      messageDiv.classList.remove('success', 'error');
+      messageDiv.classList.add(type);
+    }
+
+    // Toggle FAQ
+    function toggleFaq(element) {
+      const answer = element.nextElementSibling;
+      const toggle = element.querySelector('.faq-toggle');
+
+      // Close other FAQs
+      document.querySelectorAll('.faq-answer.open').forEach(openAnswer => {
+        if (openAnswer !== answer) {
+          openAnswer.classList.remove('open');
+          openAnswer.previousElementSibling.querySelector('.faq-toggle').classList.remove('open');
+        }
+      });
+
+      // Toggle current FAQ
+      answer.classList.toggle('open');
+      toggle.classList.toggle('open');
+    }
+
+    // Add smooth scroll behavior
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      });
+    });
+
+    // Form input validation in real-time
+    document.getElementById('name').addEventListener('blur', () => {
+      const name = document.getElementById('name').value.trim();
+      if (!name) {
+        document.getElementById('name-error').textContent = 'Name is required';
+        document.getElementById('name-error').classList.add('show');
+        document.getElementById('name').classList.add('error');
+      } else {
+        document.getElementById('name-error').classList.remove('show');
+        document.getElementById('name').classList.remove('error');
+      }
+    });
+
+    document.getElementById('email').addEventListener('blur', () => {
+      const email = document.getElementById('email').value.trim();
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email) {
+        document.getElementById('email-error').textContent = 'Email is required';
+        document.getElementById('email-error').classList.add('show');
+        document.getElementById('email').classList.add('error');
+      } else if (!emailRegex.test(email)) {
+        document.getElementById('email-error').textContent = 'Please enter a valid email';
+        document.getElementById('email-error').classList.add('show');
+        document.getElementById('email').classList.add('error');
+      } else {
+        document.getElementById('email-error').classList.remove('show');
+        document.getElementById('email').classList.remove('error');
+      }
+    });
+
+    document.getElementById('phone').addEventListener('blur', () => {
+      const phone = document.getElementById('phone').value.trim();
+      if (!phone) {
+        document.getElementById('phone-error').textContent = 'Phone number is required';
+        document.getElementById('phone-error').classList.add('show');
+        document.getElementById('phone').classList.add('error');
+      } else if (phone.length < 10) {
+        document.getElementById('phone-error').textContent = 'Please enter a valid phone number';
+        document.getElementById('phone-error').classList.add('show');
+        document.getElementById('phone').classList.add('error');
+      } else {
+        document.getElementById('phone-error').classList.remove('show');
+        document.getElementById('phone').classList.remove('error');
+      }
+    });
+  </script>
+</body>
+</html>
